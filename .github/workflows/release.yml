@@ -27,7 +27,7 @@ jobs:
           git remote set-url origin "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git"
       - name: Install gitflow
         run: |
-          apt-get install git-flow
+          sudo apt-get install git-flow
           git flow init -d
       - name: Create release
         run: git flow release start ${{github.event.issue.title}}
