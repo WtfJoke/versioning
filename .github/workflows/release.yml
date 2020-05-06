@@ -28,7 +28,7 @@ jobs:
 
       - name: Create release branch
         run: |
-          git switch -c release
+          git checkout -B release
           git merge develop
       - name: Bump Version
         run: |
@@ -47,7 +47,7 @@ jobs:
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     title: "Release to master",
-                    head: "release",
+                    head: "develop",
                     base: "master",
                     });
             const develop_pr = github.pulls.create({
@@ -70,34 +70,29 @@ jobs:
           script: |
             const {owner, repo} = context.repo
 
-            const master_review = github.pulls.createReview({
-                owner,
-                repo,
-                pull_number: process.env.MASTER_PR,
-                event: "APPROVE",
-                "comments": []
-                })
-            const developer_review = github.pulls.createReview({
+
+            const developer_review = await github.pulls.createReview({
                 owner,
                 repo,
                 pull_number: process.env.DEVELOP_PR,
                 event: "APPROVE",
                 "comments": []
                 })
-            await Promise.all([master_review, developer_review])
 
-            const master_merge = await github.pulls.merge({
-                owner,
-                repo,
-                pull_number: process.env.MASTER_PR,
-                merge_method: "rebase"
-                })
 
             const develop_merge = await github.pulls.merge({
                 owner,
                 repo,
                 pull_number: process.env.DEVELOP_PR,
                 merge_method: "rebase"
+                })
+                
+            const master_review = await github.pulls.createReview({
+                owner,
+                repo,
+                pull_number: process.env.MASTER_PR,
+                event: "APPROVE",
+                "comments": []
                 })
 
       - name: PR Branches
