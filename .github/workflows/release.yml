@@ -40,7 +40,6 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            try {
             const master_pr = await github.pulls.create({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
@@ -50,20 +49,6 @@ jobs:
                     });
             console.log(master_pr)
 
-            } catch (error) {
-                console.log(error.message)
-                
-            }
-            # const develop_pr = github.pulls.create({
-            #         owner,
-            #         repo,
-            #         title: "Release ${{github.event.issue.title}} to develop",
-            #         head: "release",
-            #         base: "develop",
-            #         });
-            # const [master_pr_result, develop_pr_result] = await Promise.all([promise1, promise2, promise3])
-            # console.log(develop_pr_result.id, develop_pr_result.name)
-            # console.log(master_pr_result.id, master_pr_result.name)
       - name: PR Branches
         run: |
           hub pull-request -m "Release ${{github.event.issue.title}} to master" -b master
@@ -88,3 +73,13 @@ jobs:
     #     git push origin master
     #     git push origin develop
     #     git push --tags
+    # const develop_pr = github.pulls.create({
+    #         owner,
+    #         repo,
+    #         title: "Release ${{github.event.issue.title}} to develop",
+    #         head: "release",
+    #         base: "develop",
+    #         });
+    # const [master_pr_result, develop_pr_result] = await Promise.all([promise1, promise2, promise3])
+    # console.log(develop_pr_result.id, develop_pr_result.name)
+    # console.log(master_pr_result.id, master_pr_result.name)
