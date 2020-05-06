@@ -53,6 +53,24 @@ jobs:
           git checkout master
           git merge release
           git push origin master
+
+      - uses: actions/github-script@0.9.0
+        name: Comment Issue
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            await github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🎉🎉 Deployment has been successful dispatched! 🚀'
+            })
+            await github.issues.update({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "closed"
+            });
     #   # - name: Merge to master
     #   run: |
     #     cat .git/config
