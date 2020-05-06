@@ -7,7 +7,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ github.event.label.name == 'release' }}
+    if: ${{ github.event.label.name == 'release' || startsWith( github.event.label.name, "bump:" )}}
     steps:
       # - uses: actions/checkout@v2
       #   with:
