@@ -34,6 +34,7 @@ jobs:
         run: |
           yarn config set version-git-tag false
           yarn version --patch
+          git commit -a -m "Bump version to ${{github.event.issue.title}}"
       - name: Merge to master
         run: |
           cat .git/config
