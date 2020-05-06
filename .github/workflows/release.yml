@@ -9,52 +9,34 @@ jobs:
     timeout-minutes: 10
     if: ${{ github.event.label.name == 'release' }}
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: master
-      - uses: actions/checkout@v2
-        with:
-          ref: develop
+      # - uses: actions/checkout@v2
+      #   with:
+      #     ref: develop
       - uses: actions/github-script@0.9.0
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             console.log("issue title", context.issue.title)
 
-      - name: Set Git Author and remote
+      - name: Setup Git
         run: |
+          git init
           git config user.email "octocat@github.com"
           git config user.name ${GITHUB_ACTOR}
           echo $GITHUB_ACTOR
           echo ${GITHUB_ACTOR}
           git remote set-url origin "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git"
-      - name: Install gitflow
-        run: |
-          sudo apt-get install git-flow
-          git flow init -d
-      - name: Create release
-        run: git flow release start ${{github.event.issue.title}}
+          git pull origin master
+          git pull origin develop
+          git checkout develop
+      - name: Create release branch
+        run: git checkout -b release
       - name: Bump Version
         run: yarn version --patch
-      - name: Finish release
+      - name: Merge to master
         run: |
-          export GIT_MERGE_AUTOEDIT=no
-          git flow release finish ${{github.event.issue.title}} -m "Release ${{github.event.issue.title}}"
-          unset GIT_MERGE_AUTOEDIT
+          git remote set-url origin "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch
+          git merge origin/release
           git push origin master
-          git push orgin develop
-          git push --tags
-      # - name: Create release branch
-      #   run: git checkout -b release
-      # - name: Bump version + Tag
-      #   run: ./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${{github.event.issue.title}}
-      # - uses: actions/checkout@v2
-      #   with:
-      #     ref: master
-      # - name: Merge to master
-      #   run: |
-      #     git remote set-url origin "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git"
-      #     git fetch
-      #     git merge origin/release
-      #     git push origin master
-      #     git push origin --delete release
+          git push origin --delete release
