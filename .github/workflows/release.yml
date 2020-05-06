@@ -26,8 +26,6 @@ jobs:
               })
               throw new Error("More than one label provided")
             }
-            const config = require('./package.json') 
-            throw new Error(config.version)
             const increment_level = context.payload.issue.labels.find(label => label.name.startsWith("bump:") )
             if (!increment_level) {
               await github.issues.createComment({
@@ -77,6 +75,7 @@ jobs:
           yarn version --$BUMP_LEVEL
           git push origin release
           git push --tags
+          cat package.json | jq.version | echo ::set-env name=NEW_VERSION::$1
       - name: Run E2E Tests
         run: |
           echo "RUNNING E2E TEST"
@@ -107,7 +106,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🎉🎉 Deployment has been successful dispatched! 🚀'
+              body: `🎉🎉 Deployment has been successful dispatched version ${process.env.NEW_VERSION}! 🚀`
             })
             await github.issues.update({
               issue_number: context.issue.number,
