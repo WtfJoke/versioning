@@ -32,10 +32,8 @@ jobs:
         run: git checkout -b release
       - name: Bump Version
         run: |
+          yarn config set version-git-tag false
           yarn version --patch
-          git status
-          git add .
-          git commit -m "Bumped version number to ${{github.event.issue.title}}"
       - name: Merge to master
         run: |
           git checkout master
