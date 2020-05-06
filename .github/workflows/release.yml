@@ -40,6 +40,8 @@ jobs:
         run: |
           git checkout -B develop
           yarn version --no-git-tag-version --prerelease
+          git add .
+          git commit -m "start new release cycle"
           git push origin develop
 
       - name: Wait for finish E2E Tests
