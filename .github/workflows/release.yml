@@ -25,7 +25,9 @@ jobs:
           git config user.name ${GITHUB_ACTOR}
           echo $GITHUB_ACTOR
           echo ${GITHUB_ACTOR}
-          git clone "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git"
+          git clone --depth=1 "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git" .
+          ls -la
+
           git checkout develop
       - name: Create release branch
         run: git checkout -b release
