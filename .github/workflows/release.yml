@@ -41,6 +41,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            const {owner, repo} = context.repo
             const master_pr = github.pulls.create({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
@@ -56,6 +57,17 @@ jobs:
                     base: "develop",
                     });
             const [master_pr_result, develop_pr_result] = await Promise.all([master_pr, develop_pr])
+            github.pulls.createReview({
+                owner,
+                repo,
+                pull_number: master_pr_result.data.number,
+                event: "APPROVE",
+                comments[].path: "package.json",
+                comments[].position: 0,
+                comments[].body: ""
+                    })
+
+
             console.log(develop_pr_result.data.id, develop_pr_result.data.title)
             console.log(master_pr_result.data.id, master_pr_result.data.title)
 
