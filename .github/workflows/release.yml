@@ -26,11 +26,9 @@ jobs:
           git config user.email "octocat@github.com"
           git config user.name ${GITHUB_ACTOR}
 
-
-          git checkout develop
       - name: Create release branch
         run: |
-          git checkout release
+          git switch -c release
           git merge develop
       - name: Bump Version
         run: |
