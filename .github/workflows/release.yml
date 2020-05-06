@@ -35,22 +35,27 @@ jobs:
           yarn config set version-git-tag false
           yarn version --patch
           git commit -a -m "Bump version to ${{github.event.issue.title}}"
-      - name: Merge to master
+      - name: PR Branches
         run: |
-          cat .git/config
-          git fetch origin 
-          git checkout master
-          git merge --no-ff -m "Merge ${{github.event.issue.title}} into master" release 
-          git tag -a -m "add tag to master with ${{github.event.issue.title}}" "${{github.event.issue.title}}"
-      - name: Merge to develop
-        run: |
-          git checkout develop
-          git merge --no-ff release
-      - name: Delete release Branch
-        run: |
-          git branch -d release
-      - name: Push new Branches
-        run: |
-          git push origin master
-          git push origin develop
-          git push --tags
+          hub pull-request -m "Release ${{github.event.issue.title}} to master" -b master
+          hub pull-request -m "Release ${{github.event.issue.title}} to develop" -b develop
+      # - name: Merge to master
+      #   run: |
+      #     cat .git/config
+      #     git fetch origin
+      #     git checkout master
+      #     git merge --no-ff -m "Merge ${{github.event.issue.title}} into master" release
+      #     git tag -a -m "add tag to master with ${{github.event.issue.title}}" "${{github.event.issue.title}}"
+      # - name: Merge to develop
+      #   run: |
+      #     git checkout develop
+      #     git merge --no-ff release
+      # - name: Delete release Branch
+      #   run: |
+      #     git branch -d release
+      # - name: Push new Branches
+      #   run: |
+      #     hub pull-request -m "Release ${{github.event.issue.title}} to master" -
+      #     git push origin master
+      #     git push origin develop
+      #     git push --tags
