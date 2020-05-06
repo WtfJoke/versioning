@@ -21,7 +21,7 @@ jobs:
       - name: Setup Git
         run: |
           ls -la
-          git clone --depth=1 "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git" .
+          git clone "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git" .
           ls -la
           git config user.email "octocat@github.com"
           git config user.name ${GITHUB_ACTOR}
@@ -36,6 +36,7 @@ jobs:
           yarn version --patch
       - name: Merge to master
         run: |
+          cat .git/config
           git fetch origin 
           git checkout master
           git merge --no-ff release
