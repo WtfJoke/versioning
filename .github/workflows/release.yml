@@ -36,7 +36,7 @@ jobs:
           yarn version --patch
       - name: Merge to master
         run: |
-          git checkout origin master
+          git checkout master
           git merge --no-ff release
           git tag -a ${{github.event.issue.title}}
       - name: Merge to develop
