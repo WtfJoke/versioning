@@ -41,14 +41,23 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const master_pr = await github.pulls.create({
+            const master_pr = github.pulls.create({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     title: "Release to master",
                     head: "release",
                     base: "master",
                     });
-            console.log(master_pr)
+                const develop_pr = github.pulls.create({
+                        owner,
+                        repo,
+                        title: "Release to develop",
+                        head: "release",
+                        base: "develop",
+                        });
+                const [master_pr_result, develop_pr_result] = await Promise.all([promise1, promise2, promise3])
+                console.log(develop_pr_result.data.id, develop_pr_result.data.title)
+                console.log(master_pr_result.data.id, master_pr_result.data.title)
 
       - name: PR Branches
         run: |
