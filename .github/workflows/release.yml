@@ -74,13 +74,8 @@ jobs:
                 repo,
                 pull_number: process.env.MASTER_PR,
                 event: "APPROVE",
-                "comments": [
-                    # {
-                    # "path": "package.json",
-                    # "position": 1,
-                    # "body": "Automatic approval from github bot"
-                    # }
-                ]
+                "comments": []
+                
                 })
             console.log(result)
 
