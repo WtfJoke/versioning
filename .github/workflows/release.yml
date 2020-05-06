@@ -17,6 +17,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            console.log(JSON.stringify(context.issue.labels, null, 2))
             const increment_level = context.issue.labels.find(label => label.name.startsWith("bump:") )
             if (!increment_level) {
               await github.issues.createComment({
