@@ -26,9 +26,6 @@ jobs:
           echo $GITHUB_ACTOR
           echo ${GITHUB_ACTOR}
           git clone "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git"
-          git remote set-url origin "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git"
-          git pull origin master
-          git pull origin develop
           git checkout develop
       - name: Create release branch
         run: git checkout -b release
