@@ -35,27 +35,50 @@ jobs:
           yarn config set version-git-tag false
           yarn version --patch
           git commit -a -m "Bump version to ${{github.event.issue.title}}"
-      - name: PR Branches
-        run: |
-          hub pull-request -m "Release ${{github.event.issue.title}} to master" -b master
-          hub pull-request -m "Release ${{github.event.issue.title}} to develop" -b develop
-      # - name: Merge to master
-      #   run: |
-      #     cat .git/config
-      #     git fetch origin
-      #     git checkout master
-      #     git merge --no-ff -m "Merge ${{github.event.issue.title}} into master" release
-      #     git tag -a -m "add tag to master with ${{github.event.issue.title}}" "${{github.event.issue.title}}"
-      # - name: Merge to develop
-      #   run: |
-      #     git checkout develop
-      #     git merge --no-ff release
-      # - name: Delete release Branch
-      #   run: |
-      #     git branch -d release
-      # - name: Push new Branches
-      #   run: |
-      #     hub pull-request -m "Release ${{github.event.issue.title}} to master" -
-      #     git push origin master
-      #     git push origin develop
-      #     git push --tags
+      - uses: actions/github-script@0.9.0
+        name: Create PRs
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const {owner, repo} = context.repo
+            const master_pr = github.pulls.create({
+                    owner
+                    repo,
+                    title: "Release ${{github.event.issue.title}} to master",
+                    head: "release",
+                    base: "master",
+                    });
+            const develop_pr = github.pulls.create({
+                    owner
+                    repo,
+                    title: "Release ${{github.event.issue.title}} to develop",
+                    head: "release",
+                    base: "develop",
+                    });
+            const [master_pr_result, develop_pr_result] = await Promise.all([promise1, promise2, promise3])
+            console.log(develop_pr_result.id, develop_pr_result.name)
+            console.log(master_pr_result.id, master_pr_result.name)
+    #   - name: PR Branches
+    #     run: |
+    #       hub pull-request -m "Release ${{github.event.issue.title}} to master" -b master
+    #       hub pull-request -m "Release ${{github.event.issue.title}} to develop" -b develop
+    #   # - name: Merge to master
+    #   run: |
+    #     cat .git/config
+    #     git fetch origin
+    #     git checkout master
+    #     git merge --no-ff -m "Merge ${{github.event.issue.title}} into master" release
+    #     git tag -a -m "add tag to master with ${{github.event.issue.title}}" "${{github.event.issue.title}}"
+    # - name: Merge to develop
+    #   run: |
+    #     git checkout develop
+    #     git merge --no-ff release
+    # - name: Delete release Branch
+    #   run: |
+    #     git branch -d release
+    # - name: Push new Branches
+    #   run: |
+    #     hub pull-request -m "Release ${{github.event.issue.title}} to master" -
+    #     git push origin master
+    #     git push origin develop
+    #     git push --tags
