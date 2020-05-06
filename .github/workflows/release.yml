@@ -33,8 +33,9 @@ jobs:
       - name: Bump Version
         run: |
           yarn version --patch
+          git status
           git add .
-          git commit -a -m "Bumped version number to ${{github.event.issue.title}}"
+          git commit -m "Bumped version number to ${{github.event.issue.title}}"
       - name: Merge to master
         run: |
           git checkout master
