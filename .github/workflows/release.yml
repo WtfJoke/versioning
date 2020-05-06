@@ -41,13 +41,13 @@ jobs:
 
             if(increment_level)
             switch(increment_level.name) {
-              case "bump:patch":
+              case "release:patch":
                 console.log(`::set-output name=bump_level::patch`)
                 break;
-              case "bump:minor":
+              case "release:minor":
                 console.log(`::set-output name=bump_level::minor`)
                 break;
-              case "bump:major":
+              case "release:major":
                 console.log(`::set-output name=bump_level::major`)
                 break;
               default:
