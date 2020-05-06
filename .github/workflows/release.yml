@@ -17,7 +17,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const config = require('./package.json')
+            const config = require('./package.json') 
             throw new Error(config.version)
             const increment_level = context.payload.issue.labels.find(label => label.name.startsWith("bump:") )
             if (!increment_level) {
