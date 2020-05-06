@@ -31,11 +31,23 @@ jobs:
       - name: Create release branch
         run: git checkout -b release
       - name: Bump Version
-        run: yarn version --patch
+        run: |
+          yarn version --patch
+          git commit -a -m "Bumped version number to ${{github.event.issue.title}}"
       - name: Merge to master
         run: |
-          git remote set-url origin "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch
-          git merge origin/release
+          git checkout master
+          git merge --no-ff release
+          git tag -a ${{github.event.issue.title}}
+      - name: Merge to develop
+        run: |
+          git checkout develop
+          git merge --no-ff release
+      - name: Delete release Branch
+        run: |
+          git branch -d release
+      - name: Push new Branches
+        run: |
           git push origin master
-          git push origin --delete release
+          git push origin develop
+          git push --tags
