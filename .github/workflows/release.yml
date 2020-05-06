@@ -65,7 +65,7 @@ jobs:
                 "comments": [
                     {
                     "path": "package.json",
-                    "position": 0,
+                    "position": 1,
                     "body": "Automatic approval from github bot"
                     }
                 ]
