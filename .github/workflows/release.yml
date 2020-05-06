@@ -20,85 +20,37 @@ jobs:
 
       - name: Setup Git
         run: |
-          ls -la
-          git clone "https://${GITHUB_ACTOR}-foo:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git" .
-          ls -la
+          git clone "https://${GITHUB_ACTOR}:${{secrets.GH_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git" .
           git config user.email "octocat@github.com"
           git config user.name ${GITHUB_ACTOR}
 
       - name: Create release branch
         run: |
           git checkout -B release
-          git merge develop
+
       - name: Bump Version
         run: |
-          yarn config set version-git-tag false
           yarn version --patch
-          git commit -a -m "Bump version to ${{github.event.issue.title}}"
           git push origin release
-      - uses: actions/github-script@0.9.0
-        name: Create PRs
-        id: create-prs
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const {owner, repo} = context.repo
-            const master_pr = github.pulls.create({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    title: "Release to master",
-                    head: "develop",
-                    base: "master",
-                    });
-            const develop_pr = github.pulls.create({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    title: "Release to develop",
-                    head: "release",
-                    base: "develop",
-                    });
-            const [master_pr_result, develop_pr_result] = await Promise.all([master_pr, develop_pr])
-            console.log(`::set-output name=master_pr::${master_pr_result.data.number}`)
-            console.log(`::set-output name=develop_pr::${develop_pr_result.data.number}`)
-      - uses: actions/github-script@0.9.0
-        name: Approve PRs
-        env:
-          MASTER_PR: ${{ steps.create-prs.outputs.master_pr }}
-          DEVELOP_PR: ${{ steps.create-prs.outputs.develop_pr }}
-        with:
-          github-token: ${{secrets.GH_TOKEN}}
-          script: |
-            const {owner, repo} = context.repo
-
-
-            const developer_review = await github.pulls.createReview({
-                owner,
-                repo,
-                pull_number: process.env.DEVELOP_PR,
-                event: "APPROVE",
-                "comments": []
-                })
-
-
-            const develop_merge = await github.pulls.merge({
-                owner,
-                repo,
-                pull_number: process.env.DEVELOP_PR,
-                merge_method: "rebase"
-                })
-                
-            const master_review = await github.pulls.createReview({
-                owner,
-                repo,
-                pull_number: process.env.MASTER_PR,
-                event: "APPROVE",
-                "comments": []
-                })
-
-      - name: PR Branches
+          git push --tags
+      - name: Run E2E Tests
         run: |
-          hub pull-request -m "Release ${{github.event.issue.title}} to master" -b master
-          hub pull-request -m "Release ${{github.event.issue.title}} to develop" -b develop
+          echo "RUNNING E2E TEST"
+      - name: Start new release cycle
+        run: |
+          git checkout -B develop
+          yarn version --no-git-tag-version --prerelease
+          git push origin develop
+
+      - name: Wait for finish E2E Tests
+        run: |
+          echo "E2E FINISHED"
+
+      - name: Merge release to master
+        run: |
+          git checkout master
+          git merge release
+          git push origin master
     #   # - name: Merge to master
     #   run: |
     #     cat .git/config
