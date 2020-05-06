@@ -43,7 +43,7 @@ jobs:
             const master_pr = await github.pulls.create({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
-                    title: "Release ${{github.event.issue.title}} to master",
+                    title: "Release to master",
                     head: "release",
                     base: "master",
                     });
