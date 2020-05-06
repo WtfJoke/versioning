@@ -20,11 +20,9 @@ jobs:
 
       - name: Setup Git
         run: |
-          git init
+          ls -la
           git config user.email "octocat@github.com"
           git config user.name ${GITHUB_ACTOR}
-          echo $GITHUB_ACTOR
-          echo ${GITHUB_ACTOR}
           git clone --depth=1 "https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git" .
           ls -la
 
