@@ -66,6 +66,8 @@ jobs:
         with:
           github-token: ${{secrets.GH_TOKEN}}
           script: |
+            const {owner, repo} = context.repo
+
             console.log(process.env.MASTER_PR)
             const result = await github.pulls.createReview({
                 owner,
