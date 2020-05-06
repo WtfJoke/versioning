@@ -29,7 +29,9 @@ jobs:
 
           git checkout develop
       - name: Create release branch
-        run: git checkout release
+        run: |
+          git checkout release
+          git merge develop
       - name: Bump Version
         run: |
           yarn config set version-git-tag false
