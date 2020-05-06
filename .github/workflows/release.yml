@@ -41,7 +41,7 @@ jobs:
           git fetch origin 
           git checkout master
           git merge --no-ff -m "Merge ${{github.event.issue.title}} into master" release 
-          git tag -a ${{github.event.issue.title}}
+          git tag -a -m "add tag to master with ${{github.event.issue.title}}" ${{github.event.issue.title}}
       - name: Merge to develop
         run: |
           git checkout develop
