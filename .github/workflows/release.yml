@@ -75,7 +75,7 @@ jobs:
           yarn version --$BUMP_LEVEL
           git push origin release
           git push --tags
-          cat package.json | jq.version | echo ::set-env name=NEW_VERSION::$1
+          echo ::set-env name=NEW_VERSION::$(cat package.json | jq -r .version)
       - name: Run E2E Tests
         run: |
           echo "RUNNING E2E TEST"
