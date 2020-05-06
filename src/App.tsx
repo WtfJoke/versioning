@@ -16,7 +16,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          My Version App wiht hubflow on masterdasdasd
+          My Version App wiht hubflow on
         </a>
       </header>
     </div>
