@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          ref: master
+      - uses: actions/checkout@v2
+        with:
           ref: develop
       - uses: actions/github-script@0.9.0
         with:
