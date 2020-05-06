@@ -62,10 +62,14 @@ jobs:
                 repo,
                 pull_number: master_pr_result.data.number,
                 event: "APPROVE",
-                comments[].path: "package.json",
-                comments[].position: 0,
-                comments[].body: ""
-                    })
+                "comments": [
+                    {
+                    "path": "package.json",
+                    "position": 0,
+                    "body": "Automatic approval from github bot"
+                    }
+                ]
+                })
 
 
             console.log(develop_pr_result.data.id, develop_pr_result.data.title)
