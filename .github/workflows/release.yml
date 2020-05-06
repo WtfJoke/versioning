@@ -38,6 +38,7 @@ jobs:
           git push origin release
       - uses: actions/github-script@0.9.0
         name: Create PRs
+        id: create-prs
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -57,10 +58,19 @@ jobs:
                     base: "develop",
                     });
             const [master_pr_result, develop_pr_result] = await Promise.all([master_pr, develop_pr])
-            github.pulls.createReview({
+            console.log(`::set-output name=master_pr::${master_pr_result.data.number}`)
+      - uses: actions/github-script@0.9.0
+        name: Approve PRs
+        env:
+          MASTER_PR: ${{ steps.create-prs.outputs.master_pr }}
+        with:
+          github-token: ${{secrets.GH_TOKEN}}
+          script: |
+            console.log(process.env.MASTER_PR)
+            const result = await github.pulls.createReview({
                 owner,
                 repo,
-                pull_number: master_pr_result.data.number,
+                pull_number: process.env.MASTER_PR,
                 event: "APPROVE",
                 "comments": [
                     {
@@ -70,10 +80,7 @@ jobs:
                     }
                 ]
                 })
-
-
-            console.log(develop_pr_result.data.id, develop_pr_result.data.title)
-            console.log(master_pr_result.data.id, master_pr_result.data.title)
+            console.log(result)
 
       - name: PR Branches
         run: |
