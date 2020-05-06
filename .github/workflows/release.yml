@@ -13,6 +13,37 @@ jobs:
       #   with:
       #     ref: develop
       - uses: actions/github-script@0.9.0
+        id: determine-bump-level
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const increment_level = context.issue.labels.find(label => label.name.startsWith("bump:") )
+            if (!increment_level) {
+              await github.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: 'Please add a bump Version'
+              })
+              throw new Error("Missing bump Version")
+            }
+
+            if(increment_level)
+            switch(increment_level.name) {
+              case "bump:patch":
+                console.log(`::set-output name=bump_level::patch`)
+                break;
+              case "bump:minor":
+                console.log(`::set-output name=bump_level::minor`)
+                break;
+              case "bump:major":
+                console.log(`::set-output name=bump_level::major`)
+                break;
+              default:
+                throw new Error("unknown bump level")
+            }
+
+      - uses: actions/github-script@0.9.0
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -29,8 +60,10 @@ jobs:
           git checkout -B release
 
       - name: Bump Version
+        env:
+          BUMP_LEVEL: ${{ steps.determine-bump-level.outputs.bump_level }}
         run: |
-          yarn version --patch
+          yarn version --$BUMP_LEVEL
           git push origin release
           git push --tags
       - name: Run E2E Tests
