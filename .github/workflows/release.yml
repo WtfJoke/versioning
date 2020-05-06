@@ -26,7 +26,7 @@ jobs:
               })
               throw new Error("More than one label provided")
             }
-            const increment_level = context.payload.issue.labels.find(label => label.name.startsWith("bump:") )
+            const increment_level = context.payload.issue.labels.find(label => label.name.startsWith("release:") )
             if (!increment_level) {
               await github.issues.createComment({
                   issue_number: context.issue.number,
