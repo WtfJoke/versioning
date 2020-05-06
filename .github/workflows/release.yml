@@ -55,7 +55,7 @@ jobs:
                     head: "release",
                     base: "develop",
                     });
-            const [master_pr_result, develop_pr_result] = await Promise.all([promise1, promise2, promise3])
+            const [master_pr_result, develop_pr_result] = await Promise.all([master_pr, develop_pr])
             console.log(develop_pr_result.data.id, develop_pr_result.data.title)
             console.log(master_pr_result.data.id, master_pr_result.data.title)
 
