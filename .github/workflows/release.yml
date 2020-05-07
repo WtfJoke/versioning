@@ -61,6 +61,8 @@ jobs:
       - name: Setup Git
         run: |
           git clone "https://${GITHUB_ACTOR}:${{secrets.GH_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git" .
+          git config user.email "octocat@github.com"
+          git config user.name ${GITHUB_ACTOR}
 
       - name: Create release branch
         run: |
@@ -80,7 +82,7 @@ jobs:
       - name: Start new release cycle
         run: |
           git checkout -B develop
-          yarn version --no-git-tag-version --prerelease
+          yarn version --no-git-tag-version --prerelease --preid "prerelease"
           git add .
           git commit -m "start new release cycle"
           git push origin develop
@@ -102,6 +104,12 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            await github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🎉🎉 Deployment has been successful dispatched version ${process.env.NEW_VERSION}! 🚀`
+            })
             await github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
