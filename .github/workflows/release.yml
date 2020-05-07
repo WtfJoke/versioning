@@ -61,20 +61,6 @@ jobs:
       - name: Setup Git
         run: |
           git clone "https://${GITHUB_ACTOR}:${{secrets.GH_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git" .
-          git config user.email "octocat@github.com"
-          git config user.name ${GITHUB_ACTOR}
-      - run: ls /home/runner/work/versioning
-      - run: ls /home/runner/work/versioning/versioning
-      - uses: actions/github-script@0.9.0
-        env:
-          CWD: ${{github.workspace}}
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const path = require('path');
-            const file = require(path.join(process.env.CWD, 'ci/hello-world.js'))
-            file()
-            throw new Error (file.version)
 
       - name: Create release branch
         run: |
