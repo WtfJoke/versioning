@@ -23,7 +23,9 @@ jobs:
             const workflows = await github.actions.listRepoWorkflows({
               owner: context.repo.owner,
               repo: context.repo.repo
-            });
+            })
+            console.log(JSON.stringify(workflows, null, 2))
+
       - uses: actions/github-script@0.9.0
         id: determine-bump-level
         with:
