@@ -12,6 +12,23 @@ jobs:
       # - uses: actions/checkout@v2
       #   with:
       #     ref: develop
+
+      - uses: actions/github-script@0.9.0
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            console.log("issue title", context.issue.title)
+            const workflows = await github.actions.listRepoWorkflows({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            const badge-url = workflows.find(workflow => workflow.name === context.github.workflow)
+            await github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `![${context.github.workflow}](${badge-url})`
+            })
       - uses: actions/github-script@0.9.0
         id: determine-bump-level
         with:
