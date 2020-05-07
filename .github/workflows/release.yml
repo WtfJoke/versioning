@@ -73,7 +73,7 @@ jobs:
           script: |
             const path = require('path');
             const file = require(path.join(process.env.CWD, 'ci/hello-world.js'))
-            file.run()
+            file()
             throw new Error (file.version)
 
       - name: Create release branch

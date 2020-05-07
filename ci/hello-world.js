@@ -1,1 +1,3 @@
-export const run = () => console.log("hello World");
+export default function () {
+  console.log("hello World");
+}
