@@ -18,12 +18,14 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             console.log("issue title", context.issue.title)
+            console.log(JSON.stringify(context, null, 2))
+
             const workflows = await github.actions.listRepoWorkflows({
               owner: context.repo.owner,
-              repo: context.repo.repo,
+              repo: context.repo.repo
             });
             console.log(JSON.stringify(workflows, null, 2))
-            console.log(JSON.stringify(context, null, 2))
+
             const badge-url = workflows.find(workflow => workflow.name === context.github.workflow)
             console.log(badge.url)
             await github.issues.createComment({
