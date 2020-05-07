@@ -72,7 +72,8 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const path = require('path');
-            const file = require(path.join(process.env.CWD, 'package.json'))
+            const file = require(path.join(process.env.CWD, 'ci/hello-world.js'))
+            file.run()
             throw new Error (file.version)
 
       - name: Create release branch
