@@ -25,6 +25,14 @@ jobs:
               repo: context.repo.repo
             })
             console.log(JSON.stringify(workflows, null, 2))
+            const workflow = workflows.data.workflows.find(workflow => workflow.name === context.workflow)
+
+            await github.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: `![${context.workflow}](${workflow.badge_url})`
+              })
 
       - uses: actions/github-script@0.9.0
         id: determine-bump-level
